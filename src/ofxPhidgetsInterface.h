@@ -35,10 +35,21 @@ public:
     void setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel, double _notificationVal);
     void update();
     
-    ofEvent<double> sensorTrigger;
+    //UID
+    string getUID();
+    void setUID(string _uid);
     
+    struct MotionData{
+        double val;
+        string UID;
+    };
+    
+    ofEvent<ofxPhidgetsInterface::MotionData> sensorTrigger;
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;
     double notificationVal; //any val below this will send a notification
+    
+     //UID
+    string UID = "";
 };
