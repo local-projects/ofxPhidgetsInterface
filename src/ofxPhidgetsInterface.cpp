@@ -18,8 +18,9 @@ ofxPhidgetsInterface::~ofxPhidgetsInterface(){
     
 }
 
-void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel){
-
+void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel, double _notificationVal){
+    
+    notificationVal = _notificationVal;
     
 
     /*
@@ -49,6 +50,12 @@ void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int 
 void ofxPhidgetsInterface::update(){
     double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
+    
+    if(val<notificationVal)
+    {
+        //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
+        ofNotifyEvent(sensorTrigger, val, this); 
+    }
 }
 
 #pragma mark PHIDGETS
@@ -142,4 +149,5 @@ void ofxPhidgetsInterface::PrintEventDescriptions() {
 
 void CCONV ofxPhidgetsInterface::onVoltageChangeHandler(PhidgetVoltageRatioInputHandle voltageInput, void *ctx, double voltage){
     //printf("Voltage: %lf V\n", voltage);
+
 }
