@@ -32,8 +32,10 @@ public:
     ofxPhidgetsInterface();
     ~ofxPhidgetsInterface();
     
-    void setup();
+    void setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel);
     void update();
+    
+    
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;

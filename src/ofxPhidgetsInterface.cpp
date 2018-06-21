@@ -18,7 +18,7 @@ ofxPhidgetsInterface::~ofxPhidgetsInterface(){
     
 }
 
-void ofxPhidgetsInterface::setup(){
+void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel){
 
     
 
@@ -32,10 +32,10 @@ void ofxPhidgetsInterface::setup(){
      * Opening a VINT Hub Port as a Channel
      */
     
-    Phidget_setDeviceSerialNumber((PhidgetHandle)ch, 529937);
-    Phidget_setIsHubPortDevice((PhidgetHandle)ch, 1);
-    Phidget_setHubPort((PhidgetHandle)ch, 5);
-    Phidget_openWaitForAttachment((PhidgetHandle)ch, 5000);
+    Phidget_setDeviceSerialNumber((PhidgetHandle)ch, phidgetSerialNumber);
+    Phidget_setIsHubPortDevice((PhidgetHandle)ch, isHubDevice);
+    Phidget_setHubPort((PhidgetHandle)ch, channel);
+    Phidget_openWaitForAttachment((PhidgetHandle)ch, timeoutDuration);
 
     
     /*
