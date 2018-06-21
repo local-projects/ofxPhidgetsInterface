@@ -54,8 +54,19 @@ void ofxPhidgetsInterface::update(){
     if(val<notificationVal)
     {
         //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
-        ofNotifyEvent(sensorTrigger, val, this); 
+        MotionData data;
+        data.val = val;
+        data.UID = UID;
+        ofNotifyEvent(sensorTrigger, data, this);
     }
+}
+#pragma mark UID
+string ofxPhidgetsInterface::getUID(){
+    return UID;
+}
+
+void ofxPhidgetsInterface::setUID(string _uid){
+    UID = _uid; 
 }
 
 #pragma mark PHIDGETS
