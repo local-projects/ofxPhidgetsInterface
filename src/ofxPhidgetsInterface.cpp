@@ -51,7 +51,7 @@ void ofxPhidgetsInterface::update(){
     double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
     
-    if(val<notificationVal)
+    if(val<notificationVal && val != 0)
     {
         //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
         MotionData data;
