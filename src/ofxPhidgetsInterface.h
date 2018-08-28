@@ -33,7 +33,9 @@ public:
     ~ofxPhidgetsInterface();
     
     void setup(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel, double _notificationVal);
+    void setupDigital(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel);
     void update();
+    void drawDebug(ofVec2f pos);
     
     //UID
     string getUID();
@@ -45,11 +47,28 @@ public:
     };
     
     ofEvent<ofxPhidgetsInterface::MotionData> sensorTrigger;
+    void setNotificationVal(double _notificationVal);
+    
+    //Digital control
+    void updateDigitalOutput();
+    void turnDeviceOn(float _interval);
+    void turnDeviceOff(); 
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;
+    PhidgetDigitalOutputHandle dig = NULL;
+    
     double notificationVal; //any val below this will send a notification
     
      //UID
     string UID = "";
+    
+    //value
+    double val;
+    
+    // is this a digital control
+    bool digitalControl = false;
+    bool deviceIsOn = false;
+    float startTime = 0.0f;
+    float interval  = 1.0f;
 };
