@@ -44,12 +44,45 @@ void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int 
      */
     Phidget_setOnAttachHandler((PhidgetHandle)ch, onAttachHandler, NULL);
     PhidgetVoltageRatioInput_setOnVoltageRatioChangeHandler(ch, onVoltageChangeHandler, NULL);
+    //Phidget_setOnDetachHandler((PhidgetHandle)ch, onDetachHandler, NULL);
+    
+    digitalControl = false;
+}
+
+void ofxPhidgetsInterface::setupDigital(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel){
+    
+    /*
+     * Allocate a new Phidget Channel object
+     */
+    
+    PhidgetDigitalOutput_create(&dig);
+    
+    /*
+     * Opening a VINT Hub Port as a Channel
+     */
+    
+    Phidget_setDeviceSerialNumber((PhidgetHandle)dig, phidgetSerialNumber);
+    Phidget_setIsHubPortDevice((PhidgetHandle)dig, isHubDevice);
+    Phidget_setHubPort((PhidgetHandle)dig, channel);
+    Phidget_openWaitForAttachment((PhidgetHandle)dig, timeoutDuration);
+    
+    
+    /*
+     * Listen to channel
+     */
+    Phidget_setOnAttachHandler((PhidgetHandle)dig, onAttachHandler, NULL);
+    //Phidget_setOnDetachHandler((PhidgetHandle)dig, onDetachHandler, NULL);
+    double onOff = 0.0;
+    PhidgetDigitalOutput_setDutyCycle(dig, onOff);
+
+    digitalControl = true;
     
 }
 
 void ofxPhidgetsInterface::update(){
-    double val;
+    //double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
+    //PhidgetVoltageRatioInput_getSensorValue(ch, &val);
     
     if(val<notificationVal && val != 0)
     {
@@ -60,6 +93,52 @@ void ofxPhidgetsInterface::update(){
         ofNotifyEvent(sensorTrigger, data, this);
     }
 }
+
+void ofxPhidgetsInterface::updateDigitalOutput()
+{
+    float timeElapsed = ofGetElapsedTimef() - startTime;
+    
+    if(deviceIsOn &&
+       timeElapsed > interval)
+    {
+        ofLogNotice() << "timeElapsed: " << timeElapsed; 
+        double onOff = 0.0;
+        PhidgetDigitalOutput_setDutyCycle(dig, onOff);
+        deviceIsOn = false;
+    }
+    
+    if(deviceIsOn)
+    {
+         ofLogNotice() << "timeElapsed: " << timeElapsed;
+    }
+}
+
+void ofxPhidgetsInterface::drawDebug(ofVec2f pos)
+{
+    ofSetColor(255, 0, 0);
+    ofDrawBitmapString(UID + ": " + ofToString(val), pos.x, pos.y);
+    ofSetColor(0, 0, 0); 
+}
+
+
+#pragma mark DIGITAL CONTROL 
+
+void ofxPhidgetsInterface::turnDeviceOn(float _interval)
+{
+    double onOff = 1.0;
+    PhidgetDigitalOutput_setDutyCycle(dig, onOff);
+    deviceIsOn = true;
+    interval = _interval;
+    startTime = ofGetElapsedTimef(); 
+}
+
+void ofxPhidgetsInterface::turnDeviceOff()
+{
+    double onOff = 0.0;
+    PhidgetDigitalOutput_setDutyCycle(dig, onOff);
+    deviceIsOn = false;
+}
+
 #pragma mark UID
 string ofxPhidgetsInterface::getUID(){
     return UID;
@@ -67,6 +146,12 @@ string ofxPhidgetsInterface::getUID(){
 
 void ofxPhidgetsInterface::setUID(string _uid){
     UID = _uid; 
+}
+
+#pragma mark NOTIFICATIONVAL
+
+void ofxPhidgetsInterface::setNotificationVal(double _notificationVal){
+    notificationVal = _notificationVal;
 }
 
 #pragma mark PHIDGETS

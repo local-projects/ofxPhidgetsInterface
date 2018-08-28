@@ -22,8 +22,16 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    ofxPhidgetsInterface * motionSensor;
-    void onReceivedMotion(double &data); 
+    vector<ofxPhidgetsInterface *> motionSensors;
+    void onReceivedMotion(ofxPhidgetsInterface::MotionData &data);
     
-		
+    int chanel1 = 3;
+    int chanel2 = 1;
+    int numSensors = 2;
+    
+     vector<ofxPhidgetsInterface *> digitalOutputs;
+    int chanel1_digital = 2;
+    int chanel2_digital = 5;
+    
+    //float interval =
 };
