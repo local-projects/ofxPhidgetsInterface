@@ -37,7 +37,7 @@ void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int 
     Phidget_setIsHubPortDevice((PhidgetHandle)ch, isHubDevice);
     Phidget_setHubPort((PhidgetHandle)ch, channel);
     Phidget_openWaitForAttachment((PhidgetHandle)ch, timeoutDuration);
-
+    
     
     /*
      * Listen to channel
@@ -48,6 +48,12 @@ void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int 
     
     digitalControl = false;
 }
+
+bool ofxPhidgetsInterface::getDeviceIsOn()
+{
+    return deviceIsOn; 
+}
+    
 
 void ofxPhidgetsInterface::setupDigital(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel){
     
@@ -82,7 +88,6 @@ void ofxPhidgetsInterface::setupDigital(int phidgetSerialNumber, bool isHubDevic
 void ofxPhidgetsInterface::update(){
     //double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
-    //PhidgetVoltageRatioInput_getSensorValue(ch, &val);
     
     if(val<notificationVal && val != 0)
     {
@@ -92,6 +97,8 @@ void ofxPhidgetsInterface::update(){
         data.UID = UID;
         ofNotifyEvent(sensorTrigger, data, this);
     }
+    
+    //Calculate average value
 }
 
 void ofxPhidgetsInterface::updateDigitalOutput()
@@ -101,16 +108,10 @@ void ofxPhidgetsInterface::updateDigitalOutput()
     if(deviceIsOn &&
        timeElapsed > interval)
     {
-        ofLogNotice() << "timeElapsed: " << timeElapsed; 
-        double onOff = 0.0;
-        PhidgetDigitalOutput_setDutyCycle(dig, onOff);
-        deviceIsOn = false;
+        //ofLogNotice() << "timeElapsed: " << timeElapsed;
+        turnDeviceOff();
     }
-    
-    if(deviceIsOn)
-    {
-         ofLogNotice() << "timeElapsed: " << timeElapsed;
-    }
+
 }
 
 void ofxPhidgetsInterface::drawDebug(ofVec2f pos)
@@ -137,6 +138,12 @@ void ofxPhidgetsInterface::turnDeviceOff()
     double onOff = 0.0;
     PhidgetDigitalOutput_setDutyCycle(dig, onOff);
     deviceIsOn = false;
+    
+    //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
+    MotionData data;
+    data.val = val;
+    data.UID = UID;
+    ofNotifyEvent(turnOffTrigger, data, this);
 }
 
 #pragma mark UID
@@ -152,6 +159,84 @@ void ofxPhidgetsInterface::setUID(string _uid){
 
 void ofxPhidgetsInterface::setNotificationVal(double _notificationVal){
     notificationVal = _notificationVal;
+}
+
+#pragma mark DATA
+
+double ofxPhidgetsInterface::getRawData(){
+    return val; 
+}
+
+void ofxPhidgetsInterface::setDataInterval(int interval){
+    
+    Phidget_setDataInterval((PhidgetHandle) ch, interval);
+    
+}
+
+void ofxPhidgetsInterface::calculateMovingAverage(){
+
+    
+    /*
+     Make sure you have stored data points
+     */
+    if(storedRawData.size () < numRawDataPoints)
+    {
+        double temp = getRawData();
+        storedRawData.push_back(temp);
+        return;
+    }
+    
+    /*
+     calculate moving average
+     */
+    double total;
+    for(auto & data : storedRawData)
+    {
+        total += data;
+    }
+    
+    double average = total / storedRawData.size();
+    
+    if(storedRawData.size () == numRawDataPoints)
+    {
+        double diff = fabs(average - spikeAmplitude);
+        
+        if(diff < spikeAmplitude)
+        {
+            /*
+             This is not a spike in data so store the value the value
+             */
+            sensorVal_movingData = getRawData();
+        }
+    }
+    
+    //Store value
+    if(ma_counter < (storedRawData.size() - 1) )
+    {
+        ma_counter++;
+    }
+    else
+    {
+        ma_counter = 0;
+    }
+    
+    storedRawData[ma_counter] = getRawData();
+    
+}
+
+void ofxPhidgetsInterface::setNumRawDataPoints(int _numRawDataPoints){
+    numRawDataPoints= _numRawDataPoints;
+    
+    storedRawData.clear();
+    
+}
+
+double ofxPhidgetsInterface::getSensorValFromMovingAverage(){
+    return sensorVal_movingData;
+}
+
+void ofxPhidgetsInterface::setSpikeAmp(double _spikeAmplitude){
+    spikeAmplitude = _spikeAmplitude;
 }
 
 #pragma mark PHIDGETS

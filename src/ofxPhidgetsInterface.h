@@ -49,10 +49,24 @@ public:
     ofEvent<ofxPhidgetsInterface::MotionData> sensorTrigger;
     void setNotificationVal(double _notificationVal);
     
+    
     //Digital control
     void updateDigitalOutput();
     void turnDeviceOn(float _interval);
-    void turnDeviceOff(); 
+    void turnDeviceOff();
+    ofEvent<ofxPhidgetsInterface::MotionData> turnOffTrigger;
+    bool getDeviceIsOn();
+    // END DIGITAL Digital control
+    
+    // DATA ///////////
+    double getRawData();
+    void setDataInterval(int interval); 
+    
+    // moving average
+    void calculateMovingAverage();
+    void setNumRawDataPoints(int _numRawDataPoints);
+    double getSensorValFromMovingAverage();
+    void setSpikeAmp(double _spikeAmplitude); 
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;
@@ -71,4 +85,13 @@ private:
     bool deviceIsOn = false;
     float startTime = 0.0f;
     float interval  = 1.0f;
+    
+    // DATA ///////////
+    
+    //moving average
+    vector<double> storedRawData;
+    int numRawDataPoints = 10;
+    int ma_counter = 0;
+    double spikeAmplitude = 0.3;
+    double sensorVal_movingData = 0;
 };
