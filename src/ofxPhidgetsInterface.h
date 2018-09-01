@@ -47,8 +47,10 @@ public:
     };
     
     ofEvent<ofxPhidgetsInterface::MotionData> sensorTrigger;
-    void setNotificationVal(double _notificationVal);
     
+    // NOTIFICATION VAL
+    void setNotificationVal(double _notificationVal);
+    double getNotificationVal();
     
     //Digital control
     void updateDigitalOutput();
@@ -59,14 +61,28 @@ public:
     // END DIGITAL Digital control
     
     // DATA ///////////
-    double getRawData();
-    void setDataInterval(int interval); 
     
-    // moving average
+    void setDataInterval(int interval);
+    
+    //raw data
+    /*
+     returns the single raw data value
+     */
+    double getRawData();
+    void storeRawDataPoints();
+    
+    //average
+    double getAverageValue();
+    void setNumAverageDataPoints(int _numAverageDataPoints);
+    void calculateAverage();
+    
+    // filtered based on moving average
     void calculateMovingAverage();
-    void setNumRawDataPoints(int _numRawDataPoints);
     double getSensorValFromMovingAverage();
-    void setSpikeAmp(double _spikeAmplitude); 
+    void setSpikeAmp(double _spikeAmplitude);
+    
+    // number of data points for filtering and averages
+    void setNumRawDataPoints(int _numRawDataPoints);
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;
@@ -88,10 +104,21 @@ private:
     
     // DATA ///////////
     
-    //moving average
+    //raw data
     vector<double> storedRawData;
-    int numRawDataPoints = 10;
-    int ma_counter = 0;
+    int dataPointCounter = 0; //this is to keep track of where to store the next raw data point
+    
+    //average
+    double averageVal = 0;
+    int numAverageDataPoints = 10;
+    vector<double> storedRawData_average;
+    int dataPointCounter_average = 0;
+    
+    // filtered based on moving average
     double spikeAmplitude = 0.3;
     double sensorVal_movingData = 0;
+    
+    // number of data points for filtering and averages
+    int numRawDataPoints = 10;
+
 };

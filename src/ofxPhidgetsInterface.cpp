@@ -161,6 +161,10 @@ void ofxPhidgetsInterface::setNotificationVal(double _notificationVal){
     notificationVal = _notificationVal;
 }
 
+double ofxPhidgetsInterface::getNotificationVal(){
+    return notificationVal;
+}
+
 #pragma mark DATA
 
 double ofxPhidgetsInterface::getRawData(){
@@ -173,9 +177,7 @@ void ofxPhidgetsInterface::setDataInterval(int interval){
     
 }
 
-void ofxPhidgetsInterface::calculateMovingAverage(){
-
-    
+void ofxPhidgetsInterface::storeRawDataPoints(){
     /*
      Make sure you have stored data points
      */
@@ -186,9 +188,71 @@ void ofxPhidgetsInterface::calculateMovingAverage(){
         return;
     }
     
+    //Store value
+    if(dataPointCounter < (storedRawData.size() - 1) )
+    {
+        dataPointCounter++;
+    }
+    else
+    {
+        dataPointCounter = 0;
+    }
+    
+    storedRawData[dataPointCounter] = getRawData();
+}
+
+double ofxPhidgetsInterface::getAverageValue(){
+    return averageVal;
+}
+
+void ofxPhidgetsInterface::setNumAverageDataPoints(int _numAverageDataPoints){
+    numAverageDataPoints = _numAverageDataPoints;
+    
+    storedRawData_average.clear();
+    
+}
+
+void ofxPhidgetsInterface::calculateAverage(){
     /*
-     calculate moving average
+     Make sure you have stored data points
      */
+    if(storedRawData_average.size () < numAverageDataPoints)
+    {
+        double temp = getRawData();
+        storedRawData_average.push_back(temp);
+        return;
+    }
+    
+    //Store value
+    if(dataPointCounter_average < (storedRawData_average.size() - 1) )
+    {
+        dataPointCounter_average++;
+    }
+    else
+    {
+        dataPointCounter_average = 0;
+    }
+    
+    storedRawData_average[dataPointCounter] = getRawData();
+    
+    //calculate average
+    
+    double total;
+    for(auto & data : storedRawData_average)
+    {
+        total += data;
+    }
+    
+    averageVal = total / storedRawData_average.size();
+    
+    //ofLogNotice("ofxPhidgetsInterface::calculateAverage") << "averageVal: " << averageVal;
+}
+
+void ofxPhidgetsInterface::calculateMovingAverage(){
+
+    
+      //calculate moving average
+    
     double total;
     for(auto & data : storedRawData)
     {
@@ -196,7 +260,8 @@ void ofxPhidgetsInterface::calculateMovingAverage(){
     }
     
     double average = total / storedRawData.size();
-    
+     
+  
     if(storedRawData.size () == numRawDataPoints)
     {
         double diff = fabs(average - spikeAmplitude);
@@ -210,17 +275,6 @@ void ofxPhidgetsInterface::calculateMovingAverage(){
         }
     }
     
-    //Store value
-    if(ma_counter < (storedRawData.size() - 1) )
-    {
-        ma_counter++;
-    }
-    else
-    {
-        ma_counter = 0;
-    }
-    
-    storedRawData[ma_counter] = getRawData();
     
 }
 
