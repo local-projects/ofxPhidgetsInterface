@@ -86,19 +86,21 @@ void ofxPhidgetsInterface::setupDigital(int phidgetSerialNumber, bool isHubDevic
 }
 
 void ofxPhidgetsInterface::update(){
+    TS_START_ACC("ofxPhidgetsInterface::update");
     //double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
     
-    if(val<notificationVal && val != 0)
-    {
-        //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
-        MotionData data;
-        data.val = val;
-        data.UID = UID;
-        ofNotifyEvent(sensorTrigger, data, this);
-    }
+//    if(val<notificationVal && val != 0)
+//    {
+//        //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
+//        MotionData data;
+//        data.val = val;
+//        data.UID = UID;
+//        ofNotifyEvent(sensorTrigger, data, this);
+//    }
     
     //Calculate average value
+    TS_STOP_ACC("ofxPhidgetsInterface::update");
 }
 
 void ofxPhidgetsInterface::updateDigitalOutput()
@@ -178,6 +180,7 @@ void ofxPhidgetsInterface::setDataInterval(int interval){
 }
 
 void ofxPhidgetsInterface::storeRawDataPoints(){
+     TS_START_ACC("ofxPhidgetsInterface::storeRawDataPoints");
     /*
      Make sure you have stored data points
      */
@@ -199,6 +202,8 @@ void ofxPhidgetsInterface::storeRawDataPoints(){
     }
     
     storedRawData[dataPointCounter] = getRawData();
+     TS_STOP_ACC("ofxPhidgetsInterface::storeRawDataPoints");
+    
 }
 
 double ofxPhidgetsInterface::getAverageValue(){
@@ -213,6 +218,8 @@ void ofxPhidgetsInterface::setNumAverageDataPoints(int _numAverageDataPoints){
 }
 
 void ofxPhidgetsInterface::calculateAverage(){
+    
+    TS_START_ACC("ofxPhidgetsInterface::calculateAverage");
     /*
      Make sure you have stored data points
      */
@@ -246,13 +253,13 @@ void ofxPhidgetsInterface::calculateAverage(){
     averageVal = total / storedRawData_average.size();
     
     //ofLogNotice("ofxPhidgetsInterface::calculateAverage") << "averageVal: " << averageVal;
+    TS_STOP_ACC("ofxPhidgetsInterface::calculateAverage");
 }
 
 void ofxPhidgetsInterface::calculateMovingAverage(){
 
-    
+    TS_START_ACC("ofxPhidgetsInterface::calculateMovingAverage");
       //calculate moving average
-    
     double total;
     for(auto & data : storedRawData)
     {
@@ -275,7 +282,7 @@ void ofxPhidgetsInterface::calculateMovingAverage(){
         }
     }
     
-    
+    TS_STOP_ACC("ofxPhidgetsInterface::calculateMovingAverage");
 }
 
 void ofxPhidgetsInterface::setNumRawDataPoints(int _numRawDataPoints){
