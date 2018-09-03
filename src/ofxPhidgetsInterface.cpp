@@ -129,23 +129,29 @@ void ofxPhidgetsInterface::drawDebug(ofVec2f pos)
 void ofxPhidgetsInterface::turnDeviceOn(float _interval)
 {
     double onOff = 1.0;
+    
+    TS_START_ACC("PhidgetDigitalOutput_setDutyCycle ON");
     PhidgetDigitalOutput_setDutyCycle(dig, onOff);
+    TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle ON");
+    
     deviceIsOn = true;
     interval = _interval;
-    startTime = ofGetElapsedTimef(); 
+    //startTime = ofGetElapsedTimef();
 }
 
 void ofxPhidgetsInterface::turnDeviceOff()
 {
+    TS_START_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
     double onOff = 0.0;
     PhidgetDigitalOutput_setDutyCycle(dig, onOff);
     deviceIsOn = false;
+    TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
     
-    //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
-    MotionData data;
-    data.val = val;
-    data.UID = UID;
-    ofNotifyEvent(turnOffTrigger, data, this);
+//    //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
+//    MotionData data;
+//    data.val = val;
+//    data.UID = UID;
+//    ofNotifyEvent(turnOffTrigger, data, this);
 }
 
 #pragma mark UID
