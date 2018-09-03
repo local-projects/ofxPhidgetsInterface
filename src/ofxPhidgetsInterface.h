@@ -9,6 +9,7 @@
 #include "ofMain.h"
 #include <phidget22.h>
 #include <PhidgetHelperFunctions.h>
+#include "ofxTimeMeasurements.h"
 
 class ofxPhidgetsInterface{
 protected:
