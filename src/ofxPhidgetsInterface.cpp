@@ -130,9 +130,9 @@ void ofxPhidgetsInterface::turnDeviceOn(float _interval)
 {
     double onOff = 1.0;
     
-    TS_START_ACC("PhidgetDigitalOutput_setDutyCycle ON");
+    //TS_START_ACC("PhidgetDigitalOutput_setDutyCycle ON");
     PhidgetDigitalOutput_setDutyCycle(dig, onOff);
-    TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle ON");
+    //TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle ON");
     
     deviceIsOn = true;
     interval = _interval;
@@ -141,11 +141,11 @@ void ofxPhidgetsInterface::turnDeviceOn(float _interval)
 
 void ofxPhidgetsInterface::turnDeviceOff()
 {
-    TS_START_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
+    //TS_START_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
     double onOff = 0.0;
     PhidgetDigitalOutput_setDutyCycle(dig, onOff);
     deviceIsOn = false;
-    TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
+    //TS_STOP_ACC("PhidgetDigitalOutput_setDutyCycle OFF");
     
 //    //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
 //    MotionData data;
