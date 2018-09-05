@@ -6,6 +6,7 @@
 //
 //
 
+#pragma once
 #include "ofMain.h"
 #include <phidget22.h>
 #include <PhidgetHelperFunctions.h>
