@@ -8,7 +8,7 @@
 
 #include "ofMain.h"
 #include <phidget22.h>
-#include <PhidgetHelperFunctions.h>
+#include <Common/PhidgetHelperFunctions.h>
 
 class ofxPhidgetsInterface{
 protected:
@@ -44,7 +44,7 @@ public:
         string UID;
     };
     
-    ofEvent<ofxPhidgetsInterface::MotionData> sensorTrigger;
+    ofEvent<MotionData> sensorTrigger;
     
 private:
     PhidgetVoltageRatioInputHandle ch = NULL;
