@@ -50,16 +50,20 @@ void ofxPhidgetsInterface::setup(int phidgetSerialNumber, bool isHubDevice, int 
 void ofxPhidgetsInterface::update(){
     double val;
     PhidgetVoltageRatioInput_getVoltageRatio(ch, &val);
-    
-    if(val<notificationVal && val != 0)
+	
+	MotionData data;
+	data.val = val;
+	data.UID = UID;
+
+	mLatestData = data;
+
+	// -1 if unplugged
+    if((val < notificationVal) && (val != 0) && (val != -1))
     {
-        //ofLogNotice("ofxPhidgetsInterface::update") << "val: " << val;
-        MotionData data;
-        data.val = val;
-        data.UID = UID;
-        ofNotifyEvent(sensorTrigger, data, this);
+      ofNotifyEvent(sensorTrigger, data, this);
     }
 }
+
 #pragma mark UID
 string ofxPhidgetsInterface::getUID(){
     return UID;
@@ -67,6 +71,11 @@ string ofxPhidgetsInterface::getUID(){
 
 void ofxPhidgetsInterface::setUID(string _uid){
     UID = _uid; 
+}
+
+#pragma mark DATA
+ofxPhidgetsInterface::MotionData ofxPhidgetsInterface::getLatestData() {
+	return mLatestData;
 }
 
 #pragma mark PHIDGETS

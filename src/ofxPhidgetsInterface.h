@@ -38,12 +38,14 @@ public:
     //UID
     string getUID();
     void setUID(string _uid);
-    
+
+
     struct MotionData{
-        double val;
-        string UID;
+        double val = 0;
+        string UID = "";
     };
     
+	MotionData getLatestData();
     ofEvent<MotionData> sensorTrigger;
     
 private:
@@ -52,4 +54,5 @@ private:
     
      //UID
     string UID = "";
+	MotionData mLatestData;
 };
