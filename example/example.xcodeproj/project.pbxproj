@@ -334,7 +334,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "../../../OpenFrameworks/addons/ofxPoco/libs/poco/include ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include ../../../OpenFrameworks/addons/ofxPoco/libs/poco/include/ ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include/ ../../../OpenFrameworks/addons/ofxPoco/src";
 				WRAPPER_EXTENSION = app;
 				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
 			};
@@ -430,7 +430,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)Debug";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "../../../OpenFrameworks/addons/ofxPoco/libs/poco/include ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include ../../../OpenFrameworks/addons/ofxPoco/libs/poco/include/ ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include/ ../../../OpenFrameworks/addons/ofxPoco/src";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -458,7 +458,7 @@
 				INSTALL_PATH = /Applications;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = "../../../OpenFrameworks/addons/ofxPoco/libs/poco/include ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include ../../../OpenFrameworks/addons/ofxPoco/libs/poco/include/ ../../../OpenFrameworks/addons/ofxPoco/libs/openssl/include/ ../../../OpenFrameworks/addons/ofxPoco/src";
 				WRAPPER_EXTENSION = app;
 				baseConfigurationReference = E4EB6923138AFD0F00A09F29;
 			};

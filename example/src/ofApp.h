@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxPhidgetsInterface.h"
+//#include "ofxRemoteUIServer.h"
 
 class ofApp : public ofBaseApp{
 
@@ -33,5 +34,8 @@ class ofApp : public ofBaseApp{
     int chanel1_digital = 2;
     int chanel2_digital = 5;
     
-    //float interval =
+    bool device1On = false;
+    float interval = 1/60.0f;
+    
+    void onTurnOff(ofxPhidgetsInterface::MotionData &data);
 };
