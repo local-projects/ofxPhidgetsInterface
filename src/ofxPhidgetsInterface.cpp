@@ -224,6 +224,12 @@ void ofxPhidgetsInterface::setNumAverageDataPoints(int _numAverageDataPoints){
 }
 
 void ofxPhidgetsInterface::calculateAverage(){
+    //ofLogNotice() << "deviceIsOn-" << UID << ": " << getDeviceIsOn();
+    
+    if(getDeviceIsOn())
+    {
+        return;
+    }
     
     TS_START_ACC("ofxPhidgetsInterface::calculateAverage");
     /*
@@ -233,6 +239,7 @@ void ofxPhidgetsInterface::calculateAverage(){
     {
         double temp = getRawData();
         storedRawData_average.push_back(temp);
+        dataPointCounter_average = 0;
         return;
     }
     

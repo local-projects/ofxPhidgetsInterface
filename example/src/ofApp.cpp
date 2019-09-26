@@ -28,15 +28,20 @@ void ofApp::setup(){
     ofxPhidgetsInterface * digitalOutput = new ofxPhidgetsInterface();
     //void setupDigital(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel);
     digitalOutput->setupDigital(529937, true, 5000, chanel1_digital);
-    digitalOutput->setUID(ofToString(chanel1_digital));
+    digitalOutput->setUID(ofToString(0));
     
     ofxPhidgetsInterface * digitalOutput2 = new ofxPhidgetsInterface();
     //void setupDigital(int phidgetSerialNumber, bool isHubDevice, int timeoutDuration, int channel);
     digitalOutput2->setupDigital(529937, true, 5000, chanel2_digital);
-    digitalOutput2->setUID(ofToString(chanel2_digital));
+    digitalOutput2->setUID(ofToString(1));
     
     digitalOutputs.push_back(digitalOutput);
     digitalOutputs.push_back(digitalOutput2);
+    
+     ofAddListener(digitalOutput->turnOffTrigger, this, &ofApp::onTurnOff);
+     ofAddListener(digitalOutput2->turnOffTrigger, this, &ofApp::onTurnOff);
+    
+    
     
 }
 
@@ -51,6 +56,12 @@ void ofApp::update(){
     for(auto & digitalOutput: digitalOutputs)
     {
         digitalOutput->updateDigitalOutput();
+    }
+    
+    if(digitalOutputs[0]->getDeviceIsOn() &&
+       digitalOutputs[1]->getDeviceIsOn() )
+    {
+        ofLogError() << "Both devices are on!";
     }
     
 }
@@ -72,6 +83,19 @@ void ofApp::onReceivedMotion(ofxPhidgetsInterface::MotionData &data){
     ofLogNotice("ofApp::onReceivedMotion") << data.UID << ": " << data.val;
 }
 
+void ofApp::onTurnOff(ofxPhidgetsInterface::MotionData &data){
+    
+   if(ofToInt(data.UID) == 0)
+   {
+       digitalOutputs[1]->turnDeviceOn(interval);
+   }
+   
+    if(ofToInt(data.UID) == 1)
+   {
+       digitalOutputs[0]->turnDeviceOn(interval);
+   }
+}
+
 #pragma mark OF INTERACTIONS
 
 //--------------------------------------------------------------
@@ -86,6 +110,20 @@ void ofApp::keyPressed(int key){
             case '2':
         {
             digitalOutputs[1]->turnDeviceOn(interval);
+            break;
+        }
+        case '3':
+        {
+            interval += 1/60.0f;
+            ofLogNotice() << "interval: " << interval;
+            break;
+        }
+        case '4':
+        {
+            interval -= 1/60.0f;
+            ofLogNotice() << "interval: " << interval;
+            
+            
             break;
         }
         default: break;
